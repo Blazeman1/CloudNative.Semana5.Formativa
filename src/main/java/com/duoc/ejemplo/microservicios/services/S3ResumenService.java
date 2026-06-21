@@ -4,7 +4,7 @@ import com.duoc.ejemplo.microservicios.models.ResumenInscripcion;
 import com.duoc.ejemplo.microservicios.repositories.ResumenInscripcionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -73,6 +73,7 @@ public class S3ResumenService {
 
     /**
      * Descarga el PDF desde S3 como arreglo de bytes.
+     * CORREGIDO: Usa ResponseInputStream y readAllBytes()
      */
     public byte[] descargarResumen(Long id) {
         ResumenInscripcion resumen = obtenerResumen(id);
@@ -82,8 +83,12 @@ public class S3ResumenService {
                 .key(resumen.getS3Key())
                 .build();
 
-        ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObject(getRequest);
-        return objectBytes.asByteArray();
+        // Obtener el objeto como ResponseInputStream y leer todos los bytes
+        try (ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(getRequest)) {
+            return s3Object.readAllBytes();
+        } catch (Exception e) {
+            throw new RuntimeException("Error descargando el resumen de S3 con ID: " + id, e);
+        }
     }
 
     /**
