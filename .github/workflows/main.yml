@@ -94,7 +94,7 @@ jobs:
 
           ssh \
             -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=15 \
+            -o ConnectTimeout=10 \
             -o ConnectionAttempts=3 \
             -p "$PORT" \
             -i private_key.pem "$USER@$HOST" \
