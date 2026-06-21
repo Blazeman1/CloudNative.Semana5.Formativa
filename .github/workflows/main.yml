@@ -1,4 +1,4 @@
-name: Deploy Spring Boot Microservice
+name: Deploy Spring Boot Microservice with Docker
 
 on:
   push:
@@ -19,14 +19,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # Configurar Buildx con driver docker-container
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker-container
-          driver-opts: |
-            image=moby/buildkit:latest
-            network=host
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -34,7 +30,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Crear el archivo de configuración
       - name: Create application.yml from secrets
         run: |
           cat > src/main/resources/application.yml << EOF
@@ -65,7 +60,6 @@ jobs:
               bucket-name: ${{ secrets.AWS_S3_BUCKET }}
           EOF
 
-      # Construir la imagen Docker (sin cache para evitar errores)
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -74,37 +68,44 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/microservices-inscription:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/microservices-inscription:${{ github.sha }}
-          # Opcional: Si quieres usar cache, descomenta estas líneas
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 with Docker
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
+          DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/microservices-inscription:latest
         run: |
           echo "$PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          # Conectar por SSH y ejecutar la aplicación
-          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
-            # Instalar Java si no está instalado
-            if ! command -v java &> /dev/null; then
-              sudo dnf install -y java-17-amazon-corretto-devel
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << EOF
+            echo "=== Instalando Docker si no está instalado ==="
+            if ! command -v docker &> /dev/null; then
+              sudo dnf install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker \$USER
             fi
           
-            # Detener la aplicación anterior
-            sudo pkill -f 'java -jar' || true
+            echo "=== Iniciando sesión en Docker Hub ==="
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           
-            # Ejecutar la nueva aplicación
-            cd /home/$USER
-            sudo java -jar app.jar > app.log 2>&1 &
-            sleep 10
+            echo "=== Deteniendo contenedor anterior ==="
+            sudo docker stop microservices-app 2>/dev/null || echo "No había contenedor corriendo"
+            sudo docker rm microservices-app 2>/dev/null || echo "No había contenedor para eliminar"
           
-            # Verificar que está corriendo
-            ps aux | grep java
-            echo "Aplicación desplegada exitosamente"
+            echo "=== Descargando la última imagen ==="
+            sudo docker pull $DOCKER_IMAGE
+          
+            echo "=== Ejecutando el nuevo contenedor ==="
+            sudo docker run -d --name microservices-app -p 8080:8080 $DOCKER_IMAGE
+          
+            echo "=== Verificando que el contenedor está corriendo ==="
+            sudo docker ps
+            echo ""
+            echo "=== Últimas líneas del log ==="
+            sudo docker logs --tail 20 microservices-app
           EOF
           
           rm -f private_key.pem
