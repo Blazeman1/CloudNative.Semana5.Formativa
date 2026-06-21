@@ -1,0 +1,12 @@
+com\duoc\ejemplo\microservicios\services\PdfGeneratorService.class
+com\duoc\ejemplo\microservicios\services\CursoService.class
+com\duoc\ejemplo\microservicios\config\AwsS3Config.class
+com\duoc\ejemplo\microservicios\repositories\ResumenInscripcionRepository.class
+com\duoc\ejemplo\microservicios\controllers\ResumenController.class
+com\duoc\ejemplo\microservicios\models\Curso.class
+com\duoc\ejemplo\microservicios\models\ResumenInscripcion.class
+com\duoc\ejemplo\microservicios\repositories\CursoRepository.class
+com\duoc\ejemplo\microservicios\config\SecurityConfig.class
+com\duoc\ejemplo\microservicios\services\S3ResumenService.class
+com\duoc\ejemplo\microservicios\MicroserviciosApplication.class
+com\duoc\ejemplo\microservicios\controllers\CursoController.class

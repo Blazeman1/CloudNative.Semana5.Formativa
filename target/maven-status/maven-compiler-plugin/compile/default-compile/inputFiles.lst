@@ -1,0 +1,12 @@
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\MicroserviciosApplication.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\config\AwsS3Config.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\services\S3ResumenService.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\models\Curso.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\repositories\ResumenInscripcionRepository.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\services\PdfGeneratorService.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\repositories\CursoRepository.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\config\SecurityConfig.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\controllers\CursoController.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\controllers\ResumenController.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\models\ResumenInscripcion.java
+C:\Users\ffuen\Desktop\CloudNative.Semana5.Formativa\src\main\java\com\duoc\ejemplo\microservicios\services\CursoService.java
