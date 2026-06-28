@@ -37,7 +37,7 @@ import java.util.List;
  *
  * Nota sobre Azure AD B2C y auto-discovery OIDC (Semana 5):
  * Se usa jwk-set-uri en vez de issuer-uri porque B2C no implementa el endpoint
- * de auto-discovery estándar en la ruta del issuer. Ver sección 2.4 del informe S5.
+ * de auto-discovery estándar en la ruta del issuer. Ver sección 2.4 del informe S5. 
  */
 @Configuration
 @EnableWebSecurity
